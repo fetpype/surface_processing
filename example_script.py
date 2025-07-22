@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
             ugm.generate_mesh(
                 lut_file,
-                str(temp_mask),
+                temp_mask.name,
                 output_mesh,
                 path_pymesh_container,
                 nb_iter,
