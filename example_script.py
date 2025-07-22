@@ -6,7 +6,7 @@ import nibabel as nib
 import util.generate_mesh as ugm
 
 if __name__ == "__main__":
-    TMP_PATH = ""
+    #TMP_PATH = "/scratch/gauzias/data/test_surface_processing"
     path_pymesh_container = "/scratch/gauzias/softs/pymesh_latest.sif"
     lut_file = "/scratch/gauzias/code_gui/surface_processing/util/critical186LUT.raw.gz"
     nb_iter = 10
@@ -28,7 +28,7 @@ if __name__ == "__main__":
             data_hemi = np.zeros_like(data_mask)
             data_hemi[data_mask==label] = 1
             nii_tmpfile_hemi = nib.Nifti1Image(data_hemi, nii_white_hemi_mask.affine)
-            nib.save(nii_tmpfile_hemi, temp_mask)
+            nib.save(nii_tmpfile_hemi, temp_mask.name)
 
             ugm.generate_mesh(
                 lut_file,
