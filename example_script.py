@@ -12,8 +12,8 @@ if __name__ == "__main__":
     nb_iter = 10
     dt = 0.1
 
-    input_bounti_seg_mask = ""
-    output_mesh_basename = "/scratch/white"
+    input_bounti_seg_mask = "/scratch/gauzias/data/datasets/MarsFet/output/svrtk_BOUNTI/output_BOUNTI_seg/haste/sub-0009/ses-0012/reo-SVR-output-brain-mask-brain_bounti-19.nii.gz"
+    output_mesh_basename = "/scratch/gauzias/data/test_surface_processing/sub-0009_ses-0012_reo-SVR-output-brain-mask-brain_bounti-19.nii.gz"
     print(input_bounti_seg_mask)
     mask_filename = os.path.basename(input_bounti_seg_mask)
     # get WM hemi masks

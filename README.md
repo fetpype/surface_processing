@@ -17,15 +17,15 @@ Please cite the original papers if you use this code:
 - Q. Ma, L. Li, E. C. Robinson, B. Kainz, D. Rueckert and A. Alansary, "CortexODE: Learning Cortical Surface Reconstruction by Neural ODEs," in IEEE Transactions on Medical Imaging, vol. 42, no. 2, pp. 430-443, Feb. 2023, doi: 10.1109/TMI.2022.3206221.
 
 # Dependencies
-+ brain-slam>=0.0.10
-+ scikit-image==0.18.1
-+ numba==0.53.1
++ brain-slam
++ scikit-image
++ numba
 + pymesh (docker version)
 
 # installation for generating the hemispheres white meshes
 
 ## Create the virtual anv and install the required packages
-conda create --name surfaces python=3.12
+conda create --name surfaces python=3.8
 pip install -r requirements.txt
 
 ## Getting pymesh docker using singularity
