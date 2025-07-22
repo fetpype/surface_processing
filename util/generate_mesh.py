@@ -20,6 +20,26 @@ import trimesh
 #from slam.io import write_mesh
 #from slam.differential_geometry import laplacian_mesh_smoothing
 
+def write_mesh(mesh, gifti_file):
+    """Create a mesh object from two arrays
+
+    fixme:  intent should be set !
+    """
+    coord = mesh.vertices
+    triangles = mesh.faces
+    carray = nib.gifti.GiftiDataArray(
+        coord.astype(
+            np.float32),
+        "NIFTI_INTENT_POINTSET")
+    tarray = nib.gifti.GiftiDataArray(
+        triangles.astype(np.float32), "NIFTI_INTENT_TRIANGLE"
+    )
+    img = nib.gifti.GiftiImage(darrays=[carray, tarray])
+    # , meta=mesh.metadata)
+
+    nib.save(img, gifti_file)
+
+
 def extract_hemi_mask_bounti(bounti_seg_file):
     """Generate a hemisphere white matter mask from dHCP BOUNTI tissue
     segmentation
@@ -247,15 +267,23 @@ def generate_mesh(
             print(mesh)
             fix_mesh(temp_raw.name, temp_fixed.name, path_container)
             # topologically correct and merely uniform triangular mesh
-            # fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
-            # print(fixed_mesh)
+            fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
+            print(fixed_mesh)
             # # set the mesh into RAS+ scanner space
             # # it eases visualization with FSLeyes or Anatomist
+            # smoothed_mesh.apply_transform(affine)
+            smoothed_mesh = trimesh.smoothing.filter_laplacian(
+                fixed_mesh,
+                lamb=smoothing_step,
+                iterations=nb_smoothing_iter,
+                implicit_time_integration=False,
+                volume_constraint=False
+                                                               )
             # smoothed_mesh = laplacian_mesh_smoothing(
             #     fixed_mesh, nb_smoothing_iter, smoothing_step, volume_preservation=True
             # )
-            # smoothed_mesh.apply_transform(affine)
-            # write_mesh(smoothed_mesh, path_mesh)
+
+            write_mesh(smoothed_mesh, path_mesh)
 
 
 if __name__ == "__main__":
