@@ -8,7 +8,7 @@ import util.generate_mesh as ugm
 if __name__ == "__main__":
     TMP_PATH = ""
     path_pymesh_container = "/scratch/gauzias/softs/pymesh_latest.sif"
-    lut_file = "/scratch/gauzias/code_gui/surfaces/util/critical186LUT.raw.gz"
+    lut_file = "/scratch/gauzias/code_gui/surface_processing/util/critical186LUT.raw.gz"
     nb_iter = 10
     dt = 0.1
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
             ugm.generate_mesh(
                 lut_file,
-                temp_mask,
+                str(temp_mask),
                 output_mesh,
                 path_pymesh_container,
                 nb_iter,

@@ -1,21 +1,38 @@
 # surface_processing
+Generation of fetal inner cortical (white) surfaces using simple pipeline
+Note that this pipeline is similar to the non deep learning (DL) part of most 
+DL tools such as DeepCSR or CortexODE. 
 
+# License
 APACHE2.0 License inherited from Nighres
 
-
-util.tca correspond to the topology correction algorithm by Bazin et al.
+# Code provenance and references
+util.tca correspond to the topology correction algorithm by Bazin et al., 
+reimplemented in python+Numba by Qiang Ma in https://github.com/m-qiang/CortexODE.
 Please cite the original papers if you use this code:
 - Bazin et al. Topology correction using fast marching methods and its application to brain segmentation.
   MICCAI, 2005.
 - Bazin et al. Topology correction of segmented medical images using a fast marching algorithm.
   Computer methods and programs in biomedicine, 2007.
+- Q. Ma, L. Li, E. C. Robinson, B. Kainz, D. Rueckert and A. Alansary, "CortexODE: Learning Cortical Surface Reconstruction by Neural ODEs," in IEEE Transactions on Medical Imaging, vol. 42, no. 2, pp. 430-443, Feb. 2023, doi: 10.1109/TMI.2022.3206221.
 
-The algorithm is re-implemented and accelerated using Python+Numba.
+# Dependencies
++ brain-slam>=0.0.10
++ scikit-image==0.18.1
++ numba==0.53.1
++ pymesh (docker version)
 
-For the original Java implementation please see:
-- https://github.com/piloubazin/cbstools-public/blob/master/de/mpg/cbs/core/shape/ShapeTopologyCorrection2.java
-Or refer to the Nighres software:
-- https://nighres.readthedocs.io/en/latest/shape/topology_correction.html
-The look up table file "critical186LUT.raw.gz" is downloaded from Nighres:
-- https://nighres.readthedocs.io/en/latest/
+# installation for generating the hemispheres white meshes
+
+## Create the virtual anv and install the required packages
+conda create --name surfaces python=3.12
+pip install -r requirements.txt
+
+## Getting pymesh docker using singularity
+```bash
+singularity pull docker:pymesh/pymesh 
+```
+# Example script
+
+
 
