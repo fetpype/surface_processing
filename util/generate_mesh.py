@@ -276,7 +276,7 @@ def generate_mesh(
                 fixed_mesh,
                 lamb=smoothing_step,
                 iterations=nb_smoothing_iter,
-                implicit_time_integration=False,
+                implicit_time_integration=True,
                 volume_constraint=False
                                                                )
             # smoothed_mesh = laplacian_mesh_smoothing(
@@ -304,11 +304,11 @@ if __name__ == "__main__":
         "-n",
         "--nb_smoothing_iter",
         type=int,
-        default=10,
+        default=1,
         help="Number of smoothing iterations",
     )
     parser.add_argument(
-        "-dt", "--delta", type=float, default=0.1, help="time delta used for smoothing"
+        "-dt", "--delta", type=float, default=10, help="time delta used for smoothing"
     )
     args = parser.parse_args()
     generate_mesh(
