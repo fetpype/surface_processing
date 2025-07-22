@@ -17,8 +17,8 @@ import tca
 import trimesh
 
 
-from slam.io import write_mesh
-from slam.differential_geometry import laplacian_mesh_smoothing
+#from slam.io import write_mesh
+#from slam.differential_geometry import laplacian_mesh_smoothing
 
 def extract_hemi_mask_bounti(bounti_seg_file):
     """Generate a hemisphere white matter mask from dHCP BOUNTI tissue
@@ -247,15 +247,15 @@ def generate_mesh(
             print(mesh)
             fix_mesh(temp_raw.name, temp_fixed.name, path_container)
             # topologically correct and merely uniform triangular mesh
-            fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
-            print(fixed_mesh)
-            # set the mesh into RAS+ scanner space
-            # it eases visualization with FSLeyes or Anatomist
-            smoothed_mesh = laplacian_mesh_smoothing(
-                fixed_mesh, nb_smoothing_iter, smoothing_step, volume_preservation=True
-            )
-            smoothed_mesh.apply_transform(affine)
-            write_mesh(smoothed_mesh, path_mesh)
+            # fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
+            # print(fixed_mesh)
+            # # set the mesh into RAS+ scanner space
+            # # it eases visualization with FSLeyes or Anatomist
+            # smoothed_mesh = laplacian_mesh_smoothing(
+            #     fixed_mesh, nb_smoothing_iter, smoothing_step, volume_preservation=True
+            # )
+            # smoothed_mesh.apply_transform(affine)
+            # write_mesh(smoothed_mesh, path_mesh)
 
 
 if __name__ == "__main__":
