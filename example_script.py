@@ -9,8 +9,8 @@ if __name__ == "__main__":
     #TMP_PATH = "/scratch/gauzias/data/test_surface_processing"
     path_pymesh_container = "/scratch/gauzias/softs/pymesh_latest.sif"
     lut_file = "/scratch/gauzias/code_gui/surface_processing/util/critical186LUT.raw.gz"
-    nb_iter = 10
-    dt = 0.1
+    nb_iter = 20
+    dt = 0.3
 
     input_bounti_seg_mask = "/scratch/gauzias/data/datasets/MarsFet/output/svrtk_BOUNTI/output_BOUNTI_seg/haste/sub-0009/ses-0012/reo-SVR-output-brain-mask-brain_bounti-19.nii.gz"
     output_mesh_basename = "/scratch/gauzias/data/test_surface_processing/sub-0009_ses-0012_reo-SVR-output-brain-mask-brain_bounti-19.nii.gz"

@@ -276,7 +276,7 @@ def generate_mesh(
                 fixed_mesh,
                 lamb=smoothing_step,
                 iterations=nb_smoothing_iter,
-                implicit_time_integration=True,
+                implicit_time_integration=False,
                 volume_constraint=False
                                                                )
             # smoothed_mesh = laplacian_mesh_smoothing(
