@@ -256,22 +256,22 @@ def generate_mesh(
     mask = mask_volume.get_fdata()
     affine = mask_volume.affine
     mask = mask.astype(bool)
+    print("mesh extraction")
     # topologically correct raw triangular mesh
     mesh = seg2surf(lut_file, mask)
-    # fix normals first
 
     with tempfile.NamedTemporaryFile(suffix="_raw.obj") as temp_raw:
         with tempfile.NamedTemporaryFile(suffix="_fixed.obj") as temp_fixed:
             # export mesh into .obj format
             mesh.export(temp_raw.name)
-            print(mesh)
+            print("mesh sampling refinment")
             fix_mesh(temp_raw.name, temp_fixed.name, path_container)
             # topologically correct and merely uniform triangular mesh
             fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
-            print(fixed_mesh)
             # # set the mesh into RAS+ scanner space
             # # it eases visualization with FSLeyes or Anatomist
             # smoothed_mesh.apply_transform(affine)
+            print("mesh smoothing")
             smoothed_mesh = trimesh.smoothing.filter_laplacian(
                 fixed_mesh,
                 lamb=smoothing_step,
@@ -308,7 +308,7 @@ if __name__ == "__main__":
         help="Number of smoothing iterations",
     )
     parser.add_argument(
-        "-dt", "--delta", type=float, default=10, help="time delta used for smoothing"
+        "-dt", "--delta", type=float, default=20, help="time delta used for smoothing"
     )
     args = parser.parse_args()
     generate_mesh(
