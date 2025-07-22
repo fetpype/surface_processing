@@ -12,7 +12,7 @@ from heapq import *
 from numba import njit
 import gzip
 from scipy.ndimage import binary_dilation
-import tca
+import util.tca
 
 import trimesh
 
