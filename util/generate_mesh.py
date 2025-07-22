@@ -12,7 +12,7 @@ from heapq import *
 from numba import njit
 import gzip
 from scipy.ndimage import binary_dilation
-import util.tca
+import util.tca as utca
 
 import trimesh
 
@@ -128,7 +128,7 @@ def seg2surf(lut_file, seg, sigma=0.5, alpha=16, level=0.55):
     """
 
     # initialize topology correction
-    topo_correct = tca.topology(lut_file)
+    topo_correct = utca.topology(lut_file)
     # ------ connected components checking ------
     cc, nc = compute_cc(seg, connectivity=2, return_num=True)
     cc_id = 1 + np.argmax(
