@@ -304,11 +304,11 @@ if __name__ == "__main__":
         "-n",
         "--nb_smoothing_iter",
         type=int,
-        default=1,
+        default=20,
         help="Number of smoothing iterations",
     )
     parser.add_argument(
-        "-dt", "--delta", type=float, default=20, help="time delta used for smoothing"
+        "-dt", "--delta", type=float, default=0.3, help="time delta used for smoothing"
     )
     args = parser.parse_args()
     generate_mesh(
