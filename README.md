@@ -1,7 +1,14 @@
 # surface_processing
-Generation of fetal inner cortical (white) surfaces using simple pipeline
+Generation of fetal inner cortical (white) surfaces with spherical topology using 
+a simple pipeline.
 Note that this pipeline is similar to the non deep learning (DL) part of most 
 DL tools such as DeepCSR or CortexODE. 
+It consists of three steps:
+1. Extraction of a closed binary mask of each hemisphere by combining the segmented structures from BOUNTI,
+2. Correction of the topology in the voxel space using Bazin et al. tools (NiRes),
+3. Extraction of the closed mesh using a classical marching cubes algorithm,
+4. Refinement of the mesh (triangles, edges and vertices) using the docker of pymesh, enforcing a regular sampling of the surface,
+5. Laplacian smoothing of the mesh using Trimesh.
 
 # License
 APACHE2.0 License inherited from Nighres
@@ -23,17 +30,19 @@ Please cite the original papers if you use this code:
 + numba
 + pymesh (docker version)
 
-# installation for generating the hemispheres white meshes
+# installation 
 
 ## Create the virtual anv and install the required packages
 conda create --name surfaces python=3.8
+conda activate surfaces
 pip install -r requirements.txt
 
 ## Getting pymesh docker using singularity
 ```bash
 singularity pull docker:pymesh/pymesh 
 ```
-# Example script
+# Run the example script exmaple_script.py
+Set the parameters and run the script
 
 
 
