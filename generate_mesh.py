@@ -220,21 +220,12 @@ def fix_mesh(path_mesh, path_mesh_fixed):
     status:
           Execution status of the mesh fixing process
     """
-    path_container = "/scratch/gauzias/softs/pymesh_latest.sif"
     print(f"Correcting {path_mesh}")
-    cmd = [
-        "singularity",
-        "exec",
-        "-B",
-        os.path.dirname(path_mesh) + ":/data_in",
-        "-B",
-        os.path.dirname(path_mesh_fixed) + ":/data_out",
-        path_container,
-        "fix_mesh.py",
+    cmd = ["fix_mesh.py",
         "--detail",
         "high",
-        os.path.join("/data_in", os.path.basename(path_mesh)),
-        os.path.join("/data_out", os.path.basename(path_mesh_fixed)),
+        path_mesh,
+        path_mesh_fixed,
     ]
     status = subprocess.run(cmd)
 
