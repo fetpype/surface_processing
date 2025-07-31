@@ -275,9 +275,9 @@ def mesh_extraction(
     print("mesh extraction")
     # topologically correct raw triangular mesh
     mesh = seg2surf(mask)
-    # # set the mesh into RAS+ scanner space
-    # # it eases visualization with FSLeyes or Anatomist
-    #mesh.apply_transform(affine)
+    # apply the affine transfo from the header of seg_vol
+    # this is essential to preserve the real dimensions of the surface!
+    mesh.apply_transform(affine)
 
     with tempfile.NamedTemporaryFile(suffix="_raw.obj") as temp_raw:
         with tempfile.NamedTemporaryFile(suffix="_fixed.obj") as temp_fixed:
