@@ -245,7 +245,7 @@ def fix_mesh(path_mesh, path_mesh_fixed):
     return status
 
 
-def generate_mesh(
+def mesh_extraction(
     path_binary_mask,
     concatenated_labels,
     path_mesh,

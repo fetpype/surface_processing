@@ -3,7 +3,7 @@ import os
 import tempfile
 import numpy as np
 import nibabel as nib
-import util.generate_mesh as ugm
+from generate_mesh import mesh_extraction
 
 if __name__ == "__main__":
     # parameters to be set by the user
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     #concatenated_labels = [6,8,15,17]# for right
     nb_smoothing_iter = 20
     smoothing_step = 0.3
-    ugm.generate_mesh(
+    mesh_extraction(
         input_bounti_seg_mask,
         concatenated_labels,
         output_mesh,
