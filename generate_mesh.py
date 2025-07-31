@@ -308,9 +308,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generate a triangular mesh " "from a binary mask"
     )
-    parser.add_argument("path_mask", help="path of the input binary mask volume")
-    parser.add_argument("concatenated_labels", help="list of labels in the seg volume to concatenate in order to get the hemi mask")
-    parser.add_argument("path_mesh", help="path of the generated triangular " "mesh")
+    parser.add_argument("-s", "--seg_vol", help="path of the input segmentation volume, *.nii[.gz]")
+    parser.add_argument("-l", "--labels_concat", help="list of labels in the seg volume to concatenate in order to get the hemi mask, e.g. 2,34,26")
+
+    parser.add_argument("-m", "--mesh_out", help="filename of the output triangular mesh, e.g. *.gii or *.stl")
     parser.add_argument(
         "-n",
         "--nb_smoothing_iter",
@@ -322,10 +323,12 @@ if __name__ == "__main__":
         "-dt", "--delta", type=float, default=0.3, help="time delta used for smoothing"
     )
     args = parser.parse_args()
+    concatenated_labels = [int(item) for item in args.labels_concat.split(',')]
+    print("labels from seg_vol to concatenate : ", concatenated_labels)
     mesh_extraction(
-        args.path_mask,
-        args.concatenated_labels,
-        args.path_mesh,
+        args.seg_vol,
+        concatenated_labels,
+        args.mesh_out,
         args.nb_smoothing_iter,
         args.delta,
     )
