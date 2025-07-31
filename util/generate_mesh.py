@@ -16,9 +16,7 @@ import util.tca as utca
 
 import trimesh
 
-
-#from slam.io import write_mesh
-#from slam.differential_geometry import laplacian_mesh_smoothing
+LUT_FILE = "./critical186LUT.raw.gz" # used in seg2surf()
 
 def write_mesh(mesh, gifti_file):
     """Create a mesh object from two arrays
@@ -121,7 +119,31 @@ def extract_hemi_mask_bounti(bounti_seg_file):
     return wm_mask_vol
 
 
-def seg2surf(lut_file, seg, sigma=0.5, alpha=16, level=0.55):
+def concatenate_labels_in_mask(seg_file, concatenated_labels):
+    """Generate a hemisphere white matter the segmentation mask
+    by concatenating the labels provided in concatenated_labels
+
+    Parameters
+    ----------
+    seg_file: str
+            Path of the whole brain tissue segmentation mask
+    Returns
+    wm_hemi_mask: Nifti volume
+    -------
+    """
+    bounti_seg = nib.load(seg_file)
+    data = bounti_seg.get_fdata()
+    new_data = np.zeros_like(data)
+
+    # concatenate brain tissues within WM
+    for label in concatenated_labels:
+        new_data[data == label] = 1
+
+    new_data = new_data.astype(np.uint16)
+    wm_hemi_mask = nib.Nifti1Image(new_data, affine=bounti_seg.affine)
+    return wm_hemi_mask
+
+def seg2surf(seg, sigma=0.5, alpha=16, level=0.55):
     """Extract a topologically spherical surface from a binary mask
 
     Parameters
@@ -148,7 +170,7 @@ def seg2surf(lut_file, seg, sigma=0.5, alpha=16, level=0.55):
     """
 
     # initialize topology correction
-    topo_correct = utca.topology(lut_file)
+    topo_correct = utca.topology(LUT_FILE)
     # ------ connected components checking ------
     cc, nc = compute_cc(seg, connectivity=2, return_num=True)
     cc_id = 1 + np.argmax(
@@ -175,7 +197,7 @@ def seg2surf(lut_file, seg, sigma=0.5, alpha=16, level=0.55):
     return mesh
 
 
-def fix_mesh(path_mesh, path_mesh_fixed, path_container):
+def fix_mesh(path_mesh, path_mesh_fixed):
     """Improve quality of a triangular mesh using PyMesh fix_mesh.py script
     This function is a wrapper of the singularity execution of the pymesh
     fix_mesh.py script. This script will increase mesh quality by iteratively
@@ -202,7 +224,7 @@ def fix_mesh(path_mesh, path_mesh_fixed, path_container):
     status:
           Execution status of the mesh fixing process
     """
-
+    path_container = "/scratch/gauzias/softs/pymesh_latest.sif"
     print(f"Correcting {path_mesh}")
     cmd = [
         "singularity",
@@ -224,10 +246,9 @@ def fix_mesh(path_mesh, path_mesh_fixed, path_container):
 
 
 def generate_mesh(
-    lut_file,
     path_binary_mask,
+    concatenated_labels,
     path_mesh,
-    path_container,
     nb_smoothing_iter=10,
     smoothing_step=0.1,
 ):
@@ -251,26 +272,25 @@ def generate_mesh(
     -------
 
     """
-
-    mask_volume = nib.load(path_binary_mask)
+    mask_volume = concatenate_labels_in_mask(path_binary_mask, concatenated_labels)
     mask = mask_volume.get_fdata()
     affine = mask_volume.affine
     mask = mask.astype(bool)
     print("mesh extraction")
     # topologically correct raw triangular mesh
-    mesh = seg2surf(lut_file, mask)
+    mesh = seg2surf(mask)
+    # # set the mesh into RAS+ scanner space
+    # # it eases visualization with FSLeyes or Anatomist
+    mesh.apply_transform(affine)
 
     with tempfile.NamedTemporaryFile(suffix="_raw.obj") as temp_raw:
         with tempfile.NamedTemporaryFile(suffix="_fixed.obj") as temp_fixed:
             # export mesh into .obj format
             mesh.export(temp_raw.name)
             print("mesh sampling refinment")
-            fix_mesh(temp_raw.name, temp_fixed.name, path_container)
+            fix_mesh(temp_raw.name, temp_fixed.name)
             # topologically correct and merely uniform triangular mesh
             fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
-            # # set the mesh into RAS+ scanner space
-            # # it eases visualization with FSLeyes or Anatomist
-            # smoothed_mesh.apply_transform(affine)
             print("mesh smoothing")
             smoothed_mesh = trimesh.smoothing.filter_laplacian(
                 fixed_mesh,
@@ -278,11 +298,7 @@ def generate_mesh(
                 iterations=nb_smoothing_iter,
                 implicit_time_integration=False,
                 volume_constraint=False
-                                                               )
-            # smoothed_mesh = laplacian_mesh_smoothing(
-            #     fixed_mesh, nb_smoothing_iter, smoothing_step, volume_preservation=True
-            # )
-
+            )
             write_mesh(smoothed_mesh, path_mesh)
 
 
@@ -292,14 +308,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generate a triangular mesh " "from a binary mask"
     )
-    parser.add_argument("lut_file", help="path of the critical LUT file required for topology correction")
     parser.add_argument("path_mask", help="path of the input binary mask volume")
+    parser.add_argument("concatenated_labels", help="list of labels in the seg volume to concatenate in order to get the hemi mask")
     parser.add_argument("path_mesh", help="path of the generated triangular " "mesh")
-    parser.add_argument(
-        "path_pymesh_container",
-        help="path of the pymesh singularity " "container",
-        type=str,
-    )
     parser.add_argument(
         "-n",
         "--nb_smoothing_iter",
@@ -312,10 +323,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     generate_mesh(
-        args.lut_file,
         args.path_mask,
+        args.concatenated_labels,
         args.path_mesh,
-        args.path_pymesh_container,
         args.nb_smoothing_iter,
         args.delta,
     )
