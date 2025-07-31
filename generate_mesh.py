@@ -277,7 +277,7 @@ def mesh_extraction(
     mesh = seg2surf(mask)
     # # set the mesh into RAS+ scanner space
     # # it eases visualization with FSLeyes or Anatomist
-    mesh.apply_transform(affine)
+    #mesh.apply_transform(affine)
 
     with tempfile.NamedTemporaryFile(suffix="_raw.obj") as temp_raw:
         with tempfile.NamedTemporaryFile(suffix="_fixed.obj") as temp_fixed:
