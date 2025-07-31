@@ -322,7 +322,7 @@ if __name__ == "__main__":
         "-dt", "--delta", type=float, default=0.3, help="time delta used for smoothing"
     )
     args = parser.parse_args()
-    generate_mesh(
+    mesh_extraction(
         args.path_mask,
         args.concatenated_labels,
         args.path_mesh,
