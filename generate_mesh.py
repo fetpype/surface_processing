@@ -119,29 +119,25 @@ def extract_hemi_mask_bounti(bounti_seg_file):
     return wm_mask_vol
 
 
-def concatenate_labels_in_mask(seg_file, concatenated_labels):
+def concatenate_labels_in_mask(seg_array, concatenated_labels):
     """Generate a hemisphere white matter the segmentation mask
     by concatenating the labels provided in concatenated_labels
 
     Parameters
     ----------
-    seg_file: str
-            Path of the whole brain tissue segmentation mask
+    seg_array: numpy array
+            numpy array corresponding to the data from the nifti volume
+             corresponding typically to whole brain tissue segmentation
     Returns
-    wm_hemi_mask: Nifti volume
+    binary_mask: numpy array
     -------
     """
-    bounti_seg = nib.load(seg_file)
-    data = bounti_seg.get_fdata()
-    new_data = np.zeros_like(data)
-
+    binary_mask = np.zeros_like(seg_array, dtype=np.uint16)
     # concatenate brain tissues within WM
     for label in concatenated_labels:
-        new_data[data == label] = 1
+        binary_mask[seg_array == label] = 1
 
-    new_data = new_data.astype(np.uint16)
-    wm_hemi_mask = nib.Nifti1Image(new_data, affine=bounti_seg.affine)
-    return wm_hemi_mask
+    return binary_mask
 
 def seg2surf(seg, sigma=0.5, alpha=16, level=0.55):
     """Extract a topologically spherical surface from a binary mask
@@ -246,7 +242,7 @@ def fix_mesh(path_mesh, path_mesh_fixed):
 
 
 def mesh_extraction(
-    path_binary_mask,
+    path_seg_vol,
     concatenated_labels,
     path_mesh,
     nb_smoothing_iter=10,
@@ -272,9 +268,9 @@ def mesh_extraction(
     -------
 
     """
-    mask_volume = concatenate_labels_in_mask(path_binary_mask, concatenated_labels)
-    mask = mask_volume.get_fdata()
-    affine = mask_volume.affine
+    seg_vol_nifti = nib.load(path_seg_vol)
+    mask = concatenate_labels_in_mask(seg_vol_nifti.get_fdata(), concatenated_labels)
+    affine = seg_vol_nifti.affine
     mask = mask.astype(bool)
     print("mesh extraction")
     # topologically correct raw triangular mesh
