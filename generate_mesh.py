@@ -19,7 +19,7 @@ import trimesh
 
 LUT_FILE = os.path.join(os.path.dirname(__file__), 'util/critical186LUT.raw.gz')  # used in seg2surf()
 
-def write_mesh(mesh, gifti_file):
+def write_gii_mesh(mesh, gifti_file):
     """Create a mesh object from two arrays
 
     fixme:  intent should be set !
@@ -289,11 +289,10 @@ def mesh_extraction(
             )
 
             if path_mesh.endswith(".gii"):
-                write_mesh(smoothed_mesh, path_mesh)
-            elif path_mesh.endswith(".stl"):
-                trimesh.export(smoothed_mesh, path_mesh)
+                write_gii_mesh(smoothed_mesh, path_mesh)
             else:
-                print("Only gii and stl are handled")
+                print("Using trimesh function to export")
+                smoothed_mesh.export(path_mesh)
 
 
 if __name__ == "__main__":
