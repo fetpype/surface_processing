@@ -286,7 +286,13 @@ def mesh_extraction(
                 implicit_time_integration=False,
                 volume_constraint=False
             )
-            write_mesh(smoothed_mesh, path_mesh)
+
+            if path_mesh.endswith(".gii"):
+                write_mesh(smoothed_mesh, path_mesh)
+            elif path_mesh.endswith(".stl"):
+                trimesh.export(smoothed_mesh, path_mesh)
+            else:
+                print("Only gii and stl are handled")
 
 
 if __name__ == "__main__":
