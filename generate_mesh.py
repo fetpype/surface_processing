@@ -16,7 +16,8 @@ import util.tca as utca
 
 import trimesh
 
-LUT_FILE = "/opt/packages/surface_processing/util/critical186LUT.raw.gz" # used in seg2surf()
+
+LUT_FILE = os.path.join(os.path.dirname(__file__), 'util/critical186LUT.raw.gz')  # used in seg2surf()
 
 def write_mesh(mesh, gifti_file):
     """Create a mesh object from two arrays
