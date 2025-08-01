@@ -33,16 +33,29 @@ Please cite the original papers if you use this code:
 # installation 
 
 ## Create the virtual anv and install the required packages
-conda create --name surfaces python=3.8
-conda activate surfaces
-pip install -r requirements.txt
 
-## Getting pymesh docker using singularity
 ```bash
-singularity pull docker:pymesh/pymesh 
+conda create --name surfaces python=3.8
+
+conda activate surfaces
+
+pip install -r requirements.txt
 ```
-# Run the example script exmaple_script.py
+## Getting surface_processing as a container
+
+### docker
+```bash
+docker pull macatools/surf_proc:v0.0.1e
+```
+
+### singularity
+```bash
+singularity build /path/to/save/surf_proc_v0.0.1e.sif docker://macatools/surf_proc:v0.0.1e
+```
+
+# Run script as command line
 Set the parameters and run the script
 
-
-
+```bash
+python generate_mesh.py -s my_dseg_file.nii.gz -l 1 -m  my_dseg_file_1.stl
+```
