@@ -235,7 +235,7 @@ def fix_mesh(path_mesh, path_mesh_fixed):
 
 def mesh_extraction(
     path_seg_vol,
-    concatenated_labels,
+    labels_concat,
     path_mesh,
     nb_smoothing_iter=10,
     smoothing_step=0.1,
@@ -260,6 +260,15 @@ def mesh_extraction(
     -------
 
     """
+
+    if len(labels_concat):
+        concatenated_labels = [int(item) for item in labels_concat.split(',')]
+    else:
+
+        concatenated_labels=[]
+
+    print("labels from seg_vol to concatenate : ", concatenated_labels)
+
     seg_vol_nifti = nib.load(path_seg_vol)
     mask = concatenate_labels_in_mask(seg_vol_nifti.get_fdata(), concatenated_labels)
     affine = seg_vol_nifti.affine
@@ -315,15 +324,10 @@ def main():
         "-dt", "--delta", type=float, default=0.3, help="time delta used for smoothing"
     )
     args = parser.parse_args()
-    if len(labels_concat):
-        concatenated_labels = [int(item) for item in args.labels_concat.split(',')]
-    else:
-        concatenated_labels=[]
 
-    print("labels from seg_vol to concatenate : ", concatenated_labels)
     mesh_extraction(
         args.seg_vol,
-        concatenated_labels,
+        args.labels_concat,
         args.mesh_out,
         args.nb_smoothing_iter,
         args.delta,
