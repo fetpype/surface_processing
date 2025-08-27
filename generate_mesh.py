@@ -309,7 +309,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Generate a triangular mesh " "from a binary mask"
     )
-    parser.add_argument("-s", "--seg_vol", help="path of the input segmentation volume, *.nii[.gz]")
+    parser.add_argument("-s", "--seg_vol", help="path of the input segmentation volume, *.nii[.gz]", required=True)
     parser.add_argument("-l", "--labels_concat", help="list of labels in the seg volume to concatenate in order to get the hemi mask, e.g. 2,34,26")
 
     parser.add_argument("-m", "--mesh_out", help="filename of the output triangular mesh, e.g. *.gii or *.stl")
