@@ -261,7 +261,7 @@ def mesh_extraction(
 
     """
 
-    if len(labels_concat):
+    if labels_concat is not None:
         concatenated_labels = [int(item) for item in labels_concat.split(',')]
     else:
 
