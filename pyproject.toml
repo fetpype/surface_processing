@@ -14,7 +14,7 @@ maintainers = [{name = "surf_proc developers" }]
 authors= [{name = "Surf_proc team"}]
 description= "Pipeline for anatomic processing of brain surfaces"
 readme = {content-type = "text/markdown", file = "README.md"}
-requires-python = ">= 3.10"
+requires-python = ">= 3.7"
 license = {text = "BSD-3-Clause"}
 
 dependencies = [
