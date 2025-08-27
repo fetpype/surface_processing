@@ -294,8 +294,7 @@ def mesh_extraction(
                 print("Using trimesh function to export")
                 smoothed_mesh.export(path_mesh)
 
-
-if __name__ == "__main__":
+def main():
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -325,3 +324,6 @@ if __name__ == "__main__":
         args.nb_smoothing_iter,
         args.delta,
     )
+
+if __name__ == '__main__':
+    main()
