@@ -315,7 +315,11 @@ def main():
         "-dt", "--delta", type=float, default=0.3, help="time delta used for smoothing"
     )
     args = parser.parse_args()
-    concatenated_labels = [int(item) for item in args.labels_concat.split(',')]
+    if len(labels_concat):
+        concatenated_labels = [int(item) for item in args.labels_concat.split(',')]
+    else:
+        concatenated_labels=[]
+
     print("labels from seg_vol to concatenate : ", concatenated_labels)
     mesh_extraction(
         args.seg_vol,
