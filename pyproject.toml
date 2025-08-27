@@ -1,0 +1,30 @@
+
+
+
+[build-system]
+requires = [
+    "setuptools", "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ['version']
+name = "surf_proc"
+maintainers = [{name = "surf_proc developers" }]
+authors= [{name = "Surf_proc team"}]
+description= "Pipeline for anatomic processing of brain surfaces"
+readme = {content-type = "text/markdown", file = "README.md"}
+requires-python = ">= 3.10"
+license = {text = "BSD-3-Clause"}
+
+dependencies = [
+    "trimesh",
+    "nibabel",
+    "scikit-image",
+    "numba"]
+
+[project.scripts]
+generate_mesh = "generate_mesh:main"
+
+[tool.setuptools.packages]
+find = {}  # Scanning implicit namespaces is active by default

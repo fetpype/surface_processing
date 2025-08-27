@@ -10,8 +10,10 @@ RUN git clone https://github.com/fetpype/surface_processing.git
 
 WORKDIR /opt/packages/surface_processing
 
-RUN pip install -r requirements.txt
+RUN pip install -e .
 
 #ENTRYPOINT ["python"]
+
+
 
 
