@@ -191,6 +191,19 @@ def seg2surf(seg, sigma=0.5, alpha=16, level=0.55):
     # i.e. merging close vertices, degenerated faces and having consistent face
     # orientation
     mesh = trimesh.Trimesh(vertices=v_mc, faces=f_mc, process=True, validate=True)
+    # ------ check the number of connex components and keep the largest -----
+    if not mesh.is_watertight:
+        components = mesh.split(only_watertight=False)
+        if len(components) > 1:
+            max_faces = -1
+            largest_component = None
+            for comp in components:
+                n_faces = len(comp.faces)
+                if n_faces > max_faces:
+                    max_faces = n_faces
+                    largest_component = comp
+            mesh = largest_component
+
     return mesh
 
 
