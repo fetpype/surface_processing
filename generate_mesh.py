@@ -250,6 +250,7 @@ def mesh_extraction(
     path_seg_vol,
     labels_concat,
     path_mesh,
+    refinment=1,
     nb_smoothing_iter=10,
     smoothing_step=0.1,
 ):
@@ -292,29 +293,32 @@ def mesh_extraction(
     # apply the affine transfo from the header of seg_vol
     # this is essential to preserve the real dimensions of the surface!
     mesh.apply_transform(affine)
+    if refinment==0: # if refinment is disabled
+        fixed_mesh = mesh
+    else:# if refinment is enabled
+        with tempfile.NamedTemporaryFile(suffix="_raw.obj") as temp_raw:
+            with tempfile.NamedTemporaryFile(suffix="_fixed.obj") as temp_fixed:
+                # export mesh into .obj format
+                mesh.export(temp_raw.name)
+                print("mesh sampling refinment")
+                fix_mesh(temp_raw.name, temp_fixed.name)
+                # topologically correct and merely uniform triangular mesh
+                fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
+    print("mesh smoothing")
+    smoothed_mesh = trimesh.smoothing.filter_laplacian(
+        fixed_mesh,
+        lamb=smoothing_step,
+        iterations=nb_smoothing_iter,
+        implicit_time_integration=False,
+        volume_constraint=False
+    )
 
-    with tempfile.NamedTemporaryFile(suffix="_raw.obj") as temp_raw:
-        with tempfile.NamedTemporaryFile(suffix="_fixed.obj") as temp_fixed:
-            # export mesh into .obj format
-            mesh.export(temp_raw.name)
-            print("mesh sampling refinment")
-            fix_mesh(temp_raw.name, temp_fixed.name)
-            # topologically correct and merely uniform triangular mesh
-            fixed_mesh = trimesh.load(temp_fixed.name, force="mesh")
-            print("mesh smoothing")
-            smoothed_mesh = trimesh.smoothing.filter_laplacian(
-                fixed_mesh,
-                lamb=smoothing_step,
-                iterations=nb_smoothing_iter,
-                implicit_time_integration=False,
-                volume_constraint=False
-            )
-
-            if path_mesh.endswith(".gii"):
-                write_gii_mesh(smoothed_mesh, path_mesh)
-            else:
-                print("Using trimesh function to export")
-                smoothed_mesh.export(path_mesh)
+    if path_mesh.endswith(".gii"):
+        print("Export output mesh as gifti")
+        write_gii_mesh(smoothed_mesh, path_mesh)
+    else:
+        print("Using trimesh function to export")
+        smoothed_mesh.export(path_mesh)
 
 def main():
     import argparse
@@ -326,6 +330,9 @@ def main():
     parser.add_argument("-l", "--labels_concat", help="list of labels in the seg volume to concatenate in order to get the hemi mask, e.g. 2,34,26")
 
     parser.add_argument("-m", "--mesh_out", help="filename of the output triangular mesh, e.g. *.gii or *.stl")
+    parser.add_argument(
+        "-r", "--refinment", type=int, default=1, help="enable or disable the refinment of the sampling of the mesh using edge-flipping, 0=disable, 1=enable"
+    )
     parser.add_argument(
         "-n",
         "--nb_smoothing_iter",
@@ -342,6 +349,7 @@ def main():
         args.seg_vol,
         args.labels_concat,
         args.mesh_out,
+        args.refinment,
         args.nb_smoothing_iter,
         args.delta,
     )
